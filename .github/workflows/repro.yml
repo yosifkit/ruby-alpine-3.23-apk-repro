@@ -1,0 +1,20 @@
+name: Repro
+
+on: push
+
+jobs:
+    build:
+        name: ${{ matrix.ruby }}
+        runs-on: ubuntu-24.04
+        strategy:
+            fail-fast: false
+            matrix:
+                ruby: [3.4.7-alpine3.22, 3.4.7-alpine3.23]
+        steps:
+            - uses: actions/checkout@v6
+            - uses: docker/setup-buildx-action@v3
+            - uses: docker/setup-qemu-action@v3
+            - uses: docker/build-push-action@v6
+              with:
+                  platforms: linux/amd64,linux/arm64
+                  build-args: RUBY_VERSION=${{ matrix.ruby }}
